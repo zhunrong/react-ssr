@@ -11,6 +11,11 @@ app.use(express.static(path.resolve(__dirname, "client")));
 const template = fs.readFileSync(path.resolve(__dirname,'client/index.html'), {encoding:'utf-8'});
 
 app.get("*", (req, res, next) => {
+  if (req.url === '/favicon.ico') {
+    res.status(404).end();
+    return;
+    // return next(new Error(404));
+  }
   const context = {};
   const htmlString = render(req.url, context);
   // console.log(context);

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Switch, Route, Redirect, Link } from "react-router-dom";
+import { useSelector, useDispatch } from 'react-redux';
 
 function Page1() {
-  const [count, setCount] = useState(0);
+  // const [count, setCount] = useState(0);
+  const count = useSelector((state) => state.count);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     console.log("useEffect");
@@ -14,8 +17,8 @@ function Page1() {
       <div>计数：{count}</div>
       <div>
         操作：
-        <button onClick={() => setCount(count + 1)}>加一</button>
-        <button onClick={() => setCount(count - 1)}>减一</button>
+        <button onClick={() => dispatch({ type: 'increase' })}>加一</button>
+        <button onClick={() => dispatch({ type: 'decrease' })}>减一</button>
       </div>
       <div>
         <Link to="/page2">link to page2</Link>
