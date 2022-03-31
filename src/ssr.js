@@ -7,11 +7,14 @@ import {create} from './store';
 
 export function render(location, context) {
   const store = create();
-  return ReactDomServer.renderToString(
-    <Provider store={store}>
-      <StaticRouter location={location} context={context}>
-        <App />
-      </StaticRouter>
-    </Provider>
-  );
+  return {
+    content: ReactDomServer.renderToString(
+      <Provider store={store}>
+        <StaticRouter location={location} context={context}>
+          <App />
+        </StaticRouter>
+      </Provider>
+    ),
+    store
+  };
 }

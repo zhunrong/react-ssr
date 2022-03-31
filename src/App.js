@@ -39,6 +39,15 @@ function Page2() {
 }
 
 function App() {
+  const dispatch = useDispatch();
+
+  if (typeof window === 'undefined') {
+    dispatch({
+      type: 'init',
+      payload: 10
+    })
+  }
+
   return (
     <Switch>
       <Route path="/page1">
