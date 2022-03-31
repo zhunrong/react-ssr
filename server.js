@@ -6,22 +6,32 @@ const { render } = require("./server/ssr");
 const app = express();
 
 app.use(express.static(path.resolve(__dirname, "client")));
+app.use(express.static(path.resolve(__dirname, "public")));
 
 // 读取index.html文件
-const template = fs.readFileSync(path.resolve(__dirname,'client/index.html'), {encoding:'utf-8'});
+const template = fs.readFileSync(path.resolve(__dirname, "client/index.html"), {
+  encoding: "utf-8",
+});
 
 app.get("*", (req, res, next) => {
-  if (req.url === '/favicon.ico') {
-    res.status(404).end();
-    return;
-    // return next(new Error(404));
-  }
   const context = {};
   const htmlString = render(req.url, context);
+
   // console.log(context);
 
   // 用渲染内容替换占位字符
-  res.send(template.replace("<!-- placeholder -->", htmlString));
+  const document = template.replace("<!-- placeholder -->", htmlString);
+  
+  next(document);
 });
 
-app.listen(3000);
+app.use((err, req, res, next) => {
+  if (err instanceof Error) {
+    return res.status(500).send(err.message);
+  }
+  res.send(err);
+})
+
+app.listen(3000, () => {
+  console.log("http://localhost:3000");
+});

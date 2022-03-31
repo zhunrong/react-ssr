@@ -4,8 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build": "node ./build/webpack.js",
-    "start": "node server.js"
+    "build:watch": "node ./build/webpack.js",
+    "start:watch": "nodemon -w server/ -w server.js -w client/index.html server.js"
   },
   "dependencies": {
     "express": "^4.17.3",
@@ -21,6 +21,7 @@
     "@babel/preset-react": "^7.16.7",
     "babel-loader": "^8.2.4",
     "html-webpack-plugin": "^5.5.0",
+    "nodemon": "^2.0.15",
     "webpack": "^5.70.0",
     "webpack-merge": "^5.8.0"
   }

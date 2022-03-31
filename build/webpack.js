@@ -23,7 +23,8 @@ const webpackConfig = {
   },
 };
 
-const clientCompiler = webpack(
+const multiCompiler = webpack([
+  // 构建 client
   merge({}, webpackConfig, {
     entry: {
       client: path.resolve(__dirname, "../src/client.js"),
@@ -31,13 +32,13 @@ const clientCompiler = webpack(
     output: {
       path: path.resolve(__dirname, "../client"),
     },
-    plugins: [new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, '../index.html')
-    })],
-  })
-);
-
-const ssrCompiler = webpack(
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: path.resolve(__dirname, "../index.html"),
+      }),
+    ],
+  }),
+  // 构建 ssr
   merge({}, webpackConfig, {
     entry: {
       ssr: path.resolve(__dirname, "../src/ssr.js"),
@@ -49,17 +50,20 @@ const ssrCompiler = webpack(
         type: "commonjs",
       },
     },
-  })
-);
+  }),
+]);
 
-clientCompiler.run((err, stats) => {
-  if (err) {
-    throw err;
-  }
-  console.log(stats.toString());
-});
+// multiCompiler.run((err, stats) => {
+//   if (err) {
+//     throw err;
+//   }
+//   console.log(stats.toString());
+// });
 
-ssrCompiler.run((err, stats) => {
+multiCompiler.watch({
+  ignored: /node_modules/,
+  aggregateTimeout: 200,
+}, (err, stats) => {
   if (err) {
     throw err;
   }
