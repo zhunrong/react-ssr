@@ -2,26 +2,7 @@ const webpack = require("webpack");
 const path = require("path");
 const { merge } = require("webpack-merge");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-
-const webpackConfig = {
-  mode: "development",
-  output: {
-    publicPath: "/",
-    filename: "[name].js",
-    chunkFilename: "[name].js",
-    assetModuleFilename: "asset/[name][ext]",
-    clean: true,
-  },
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        use: ["babel-loader"],
-        exclude: /node_modules/,
-      },
-    ],
-  },
-};
+const webpackConfig = require('./webpack.base');
 
 const multiCompiler = webpack([
   // 构建 client

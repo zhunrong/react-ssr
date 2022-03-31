@@ -1,18 +1,11 @@
 import { createStore } from "redux";
 
-const initialState =
-  typeof window === "object"
-    ? window["INITIAL_STATE"]
-    : {
-        count: 0,
-      };
-
-const simpleReducer = (state = initialState, action) => {
+const simpleReducer = (state, action) => {
   switch (action.type) {
-    case 'init':
+    case "init":
       return Object.assign({}, state, {
-        count: action.payload
-      })
+        count: action.payload,
+      });
     case "increase":
       return Object.assign({}, state, {
         count: state.count + 1,
@@ -26,5 +19,11 @@ const simpleReducer = (state = initialState, action) => {
 };
 
 export function create() {
-  return createStore(simpleReducer);
+  const initialState =
+    typeof window === "object"
+      ? window["INITIAL_STATE"]
+      : {
+          count: 0,
+        };
+  return createStore(simpleReducer, initialState);
 }
