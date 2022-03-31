@@ -5,7 +5,9 @@
   "license": "MIT",
   "scripts": {
     "build:watch": "node ./build/build.watch.js",
-    "start:watch": "nodemon -w server/ -w server.js -w client/index.html server.js"
+    "build": "node ./build/build.prd.js",
+    "start:watch": "nodemon -w server/ -w server.js -w client/index.html server.js",
+    "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.17.3",

@@ -15,14 +15,18 @@ const template = fs.readFileSync(path.resolve(__dirname, "client/index.html"), {
 
 app.get("*", (req, res, next) => {
   const context = {};
-  const {content, store} = render(req.url, context);
+  const { content, store } = render(req.url, context);
 
   // console.log(context);
-  const state = `<script>window['INITIAL_STATE']=${JSON.stringify(store.getState())};</script>`
+  const state = `<script>window['INITIAL_STATE']=${JSON.stringify(
+    store.getState()
+  )};</script>`;
 
   // 用渲染内容替换占位字符
-  const document = template.replace("<!-- content -->", content).replace('<!-- state -->', state);
-  
+  const document = template
+    .replace(`<div id="app"></div>`, `<div id="app">${content}</div>`)
+    .replace(`<script id="state"></script>`, state);
+
   next(document);
 });
 
@@ -31,7 +35,7 @@ app.use((err, req, res, next) => {
     return res.status(500).send(err.message);
   }
   res.send(err);
-})
+});
 
 app.listen(3000, () => {
   console.log("http://localhost:3000");
