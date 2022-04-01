@@ -2,9 +2,19 @@ const path = require("path");
 const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { merge } = require("webpack-merge");
+const { mergeWithCustomize, unique } = require("webpack-merge");
 
 const relativePath = (...pathArr) => path.resolve(__dirname, ...pathArr);
+
+const myMerge = (...objects) =>
+  mergeWithCustomize({
+    // 合并插件的时候，保证这些插件唯一
+    customizeArray: unique(
+      "plugins",
+      ["MiniCssExtractPlugin"],
+      (plugin) => plugin.constructor && plugin.constructor.name
+    ),
+  })(...objects);
 
 const baseConfig = {
   mode: "development",
@@ -29,7 +39,11 @@ const baseConfig = {
           {
             loader: "css-loader",
             options: {
-              modules: true,
+              modules: {
+                mode: "global",
+                localIdentName: "[local]__[hash:base64:8]",
+                exportLocalsConvention: "camelCaseOnly",
+              },
             },
           },
         ],
@@ -41,7 +55,11 @@ const baseConfig = {
           {
             loader: "css-loader",
             options: {
-              modules: true,
+              modules: {
+                mode: "global",
+                localIdentName: "[local]__[hash:base64:8]",
+                exportLocalsConvention: "camelCaseOnly",
+              },
             },
           },
           "sass-loader",
@@ -49,7 +67,12 @@ const baseConfig = {
       },
     ],
   },
-  plugins: [new MiniCssExtractPlugin(), new webpack.ProgressPlugin()],
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: "[name].[contenthash:8].css",
+    }),
+    new webpack.ProgressPlugin(),
+  ],
   stats: {
     assets: true,
     modules: false,
@@ -57,12 +80,15 @@ const baseConfig = {
   },
 };
 
-const clientDevConfig = merge({}, baseConfig, {
+const clientDevConfig = myMerge({}, baseConfig, {
   entry: {
     client: relativePath("../src/client.js"),
   },
   output: {
     path: relativePath("../client"),
+    filename: "[name].[contenthash:8].js",
+    chunkFilename: "[name].[contenthash:8].js",
+    assetModuleFilename: "asset/[name].[contenthash:8][ext]",
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -72,13 +98,12 @@ const clientDevConfig = merge({}, baseConfig, {
   devtool: "eval-source-map",
 });
 
-const clientPrdConfig = merge({}, clientDevConfig, {
+const clientPrdConfig = myMerge({}, clientDevConfig, {
   mode: "production",
 });
 delete clientPrdConfig.devtool;
 
-
-const ssrDevConfig = merge({}, baseConfig, {
+const ssrDevConfig = myMerge({}, baseConfig, {
   entry: {
     ssr: relativePath("../src/ssr.js"),
   },
@@ -89,9 +114,14 @@ const ssrDevConfig = merge({}, baseConfig, {
       type: "commonjs",
     },
   },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: "[name].css",
+    }),
+  ],
 });
 
-const ssrPrdConfig = merge({}, ssrDevConfig, {
+const ssrPrdConfig = myMerge({}, ssrDevConfig, {
   mode: "production",
 });
 delete ssrPrdConfig.devtool;

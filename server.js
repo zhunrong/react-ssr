@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
-const { render } = require("./server/ssr");
+const { render, createStore, invokeSsrHooks } = require("./server/ssr");
 
 const app = express();
 
@@ -13,11 +13,16 @@ const template = fs.readFileSync(path.resolve(__dirname, "client/index.html"), {
   encoding: "utf-8",
 });
 
-app.get("*", (req, res, next) => {
-  const context = {};
-  const { content, store } = render(req.url, context);
+app.get("*", async (req, res, next) => {
 
+  const store = createStore();
+
+  const result = await invokeSsrHooks(req, store.dispatch);
+  console.log(result);
+
+  const { content, context } = render(req.url, {}, store);
   // console.log(context);
+
   const state = `<script>window['INITIAL_STATE']=${JSON.stringify(
     store.getState()
   )};</script>`;

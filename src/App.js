@@ -1,30 +1,20 @@
 import React from "react";
-import { Switch, Route, Redirect } from "react-router-dom";
-import { useDispatch } from 'react-redux';
-import Page1 from './Page1';
-import Page2 from './Page2';
+import { renderRoutes } from "react-router-config";
+import { initAction } from "./store";
 
-function App() {
-  const dispatch = useDispatch();
-
-  if (typeof window === 'undefined') {
-    dispatch({
-      type: 'init',
-      payload: 10
-    })
-  }
-
+function App({ route }) {
   return (
-    <Switch>
-      <Route path="/page1">
-        <Page1 />
-      </Route>
-      <Route path="/page2">
-        <Page2 />
-      </Route>
-      <Redirect to="/page1" />
-    </Switch>
-  )
+    <>{renderRoutes(route.routes)}</>
+  );
+}
+
+App.ssrHook = async (req, dispatch) => {
+
+  dispatch(initAction(99));
+
+  return {
+    props: {}
+  }
 }
 
 export default App;

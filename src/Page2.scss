@@ -1,7 +1,22 @@
-.page2 {
+:local(.page2) {
   h2 {
     color: green;
-    padding: 10px 30px;
+    padding: 10px 0;
     margin: 0;
+  }
+
+  table {
+    width: 400px;
+    border: 1px solid #ccc;
+    th {
+      background: #eee;
+    }
+    td {
+      border: 1px solid #ccc;
+    }
+  }
+
+  footer {
+    margin-top: 15px;
   }
 }
