@@ -93,6 +93,7 @@ const clientDevConfig = myMerge({}, baseConfig, {
   plugins: [
     new HtmlWebpackPlugin({
       template: relativePath("../index.html"),
+      filename: 'template.html'
     }),
   ],
   devtool: "eval-source-map",

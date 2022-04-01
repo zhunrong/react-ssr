@@ -1,19 +1,25 @@
 import App from "./App";
 import Page1 from "./Page1";
 import Page2 from "./Page2";
+import NotFound from './NotFound';
 
 const routes = [
   {
     component: App,
     routes: [
       {
-        path: "/page1",
+        path: "/",
+        exact: true,
         component: Page1,
       },
       {
-        path: "/page2",
+        path: "/todo",
         component: Page2,
       },
+      {
+        path: '*',
+        component: NotFound
+      }
     ],
   },
 ];

@@ -12,9 +12,9 @@ App.ssrHook = async (req, dispatch) => {
 
   dispatch(initAction(99));
 
-  return {
-    props: {}
-  }
+  // return {
+  //   props: {}
+  // }
 }
 
 export default App;

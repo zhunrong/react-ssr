@@ -1,7 +1,11 @@
 :local(.page1) {
   h2 {
     color: red;
-    padding: 10px 30px;
+    padding: 10px 0;
     margin: 0;
+  }
+
+  footer {
+    margin-top: 15px;
   }
 }

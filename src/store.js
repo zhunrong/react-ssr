@@ -34,22 +34,37 @@ export function increaseActionDelay(delay) {
   };
 }
 
-export function addTodoAction() {}
+export function addTodoAction(payload) {
+  return {
+    type: ADD_TODO,
+    payload
+  }
+}
+
+export function delTodoAction(index) {
+  return {
+    type: DEL_TODO,
+    index
+  }
+}
 
 const simpleReducer = (state, action) => {
   switch (action.type) {
     case INIT:
-      return Object.assign({}, state, {
-        count: action.payload,
-      });
+      return { ...state, count: action.payload };
     case INCREASE:
-      return Object.assign({}, state, {
-        count: state.count + 1,
-      });
+      return { ...state, count: state.count + 1 };
     case DECREASE:
-      return Object.assign({}, state, {
-        count: state.count - 1,
-      });
+      return { ...state, count: state.count - 1 };
+    case ADD_TODO: {
+      const todoList = [...state.todoList, ...action.payload];
+      return { ...state, todoList }
+    }
+    case DEL_TODO: {
+      const todoList = [...state.todoList];
+      todoList.splice(action.index, 1);
+      return { ...state, todoList }
+    }
   }
   return state;
 };

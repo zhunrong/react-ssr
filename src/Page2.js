@@ -1,9 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
+import { addTodoAction, delTodoAction } from './store';
 import style from "./Page2.scss";
 
+function fetchTodoApi() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(['吃饭', '学习', '睡觉', '打球'])
+    }, 500)
+  })
+}
+
+async function fetchTodoList(dispatch) {
+  const todoList = await fetchTodoApi();
+  dispatch(addTodoAction(todoList));
+}
+
 function Page2() {
-  const [todoList, setTodoList] = useState(["吃饭", "学习"]);
+  const [inputValue, setInputValue] = useState('');
+  const todoList = useSelector(state => state.todoList);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (todoList.length === 0) {
+      fetchTodoList(dispatch);
+    }
+  }, [])
+
+  const onChange = useCallback((e) => {
+    setInputValue(e.target.value);
+  }, []);
+
+  const addTodo = () => {
+    const todo = inputValue.trim();
+    if (!todo) return;
+    dispatch(addTodoAction([todo]));
+    setInputValue('');
+  }
 
   return (
     <div className={style.page2}>
@@ -25,28 +59,38 @@ function Page2() {
                 <tr key={index}>
                   <td>{item}</td>
                   <td style={{ textAlign: "center" }}>
-                    <button>删除</button>
+                    <button onClick={() => dispatch(delTodoAction(index))}>删除</button>
                   </td>
                 </tr>
               );
             })}
+            <tr>
+              <td>
+                <input value={inputValue} onChange={onChange}></input>
+              </td>
+              <td style={{ textAlign: "center" }}>
+                <button onClick={addTodo}>新增</button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </main>
 
       <footer>
-        <Link to="/page1">link to page1</Link>
+        <Link to="/">link to page1</Link>
       </footer>
     </div>
   );
 }
 
-Page2.ssrHook = async () => {
-  return {
-    props: {
-      list: ["运动"],
-    },
-  };
+// 在服务端被调用
+Page2.ssrHook = async (req, dispatch) => {
+  await fetchTodoList(dispatch);
+  // return {
+  //   props: {
+  //     list: ["运动"],
+  //   },
+  // };
 };
 
 export default Page2;

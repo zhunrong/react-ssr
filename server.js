@@ -9,7 +9,7 @@ app.use(express.static(path.resolve(__dirname, "client")));
 app.use(express.static(path.resolve(__dirname, "public")));
 
 // 读取index.html文件
-const template = fs.readFileSync(path.resolve(__dirname, "client/index.html"), {
+const template = fs.readFileSync(path.resolve(__dirname, "client/template.html"), {
   encoding: "utf-8",
 });
 
@@ -17,11 +17,10 @@ app.get("*", async (req, res, next) => {
 
   const store = createStore();
 
-  const result = await invokeSsrHooks(req, store.dispatch);
-  console.log(result);
+  await invokeSsrHooks(req, store.dispatch);
 
   const { content, context } = render(req.url, {}, store);
-  // console.log(context);
+  // console.log(context, content);
 
   const state = `<script>window['INITIAL_STATE']=${JSON.stringify(
     store.getState()
