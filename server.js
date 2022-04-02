@@ -8,7 +8,7 @@ const app = express();
 app.use(express.static(path.resolve(__dirname, "client")));
 app.use(express.static(path.resolve(__dirname, "public")));
 
-// 读取index.html文件
+// 读取template.html文件
 const template = fs.readFileSync(path.resolve(__dirname, "client/template.html"), {
   encoding: "utf-8",
 });
